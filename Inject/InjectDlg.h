@@ -28,4 +28,12 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+
+public:
+	typedef BOOL (__stdcall *StartAccelerateFun)(HWND hWnd, BOOL enable);
+	StartAccelerateFun StartAccelerate;
+	BOOL LoadStartAccelerateFun();
+
+public:
+	afx_msg void OnBnClickedOk();
 };

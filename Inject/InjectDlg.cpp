@@ -9,6 +9,7 @@
 #define new DEBUG_NEW
 #endif
 
+const char *START_ACCELERATE = "_StartAccelerate@8";
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -62,6 +63,7 @@ BEGIN_MESSAGE_MAP(CInjectDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDOK, &CInjectDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
@@ -95,6 +97,11 @@ BOOL CInjectDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	if (!LoadStartAccelerateFun())
+	{
+		AfxMessageBox("加载DLL函数失败");
+		exit(1);
+	}
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -148,3 +155,27 @@ HCURSOR CInjectDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CInjectDlg::OnBnClickedOk()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	StartAccelerate(0, 1);
+}
+
+BOOL CInjectDlg::LoadStartAccelerateFun()
+{
+	BOOL res = FALSE;
+	HMODULE h = ::LoadLibrary("AccelerateGear.dll");
+	if (h)
+	{
+		StartAccelerate = (StartAccelerateFun)GetProcAddress(h, START_ACCELERATE);
+		if (StartAccelerate)
+		{
+			res = TRUE;
+		}
+		else
+		{
+			FreeLibrary(h);
+		}
+	}
+	return res;
+}

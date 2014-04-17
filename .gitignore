@@ -29,3 +29,5 @@ Inject/Debug/mt.dep
 Inject/Debug/stdafx.obj
 Inject/Debug/vc90.idb
 Inject/Debug/vc90.pdb
+Debug/AccelerateGear.exp
+Debug/AccelerateGear.lib
