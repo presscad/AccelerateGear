@@ -2,6 +2,8 @@
 //
 
 #pragma once
+#include "EnumProc.h"
+#include "afxcmn.h"
 
 
 // CInjectDlg ¶Ô»°¿ò
@@ -35,5 +37,14 @@ public:
 	BOOL LoadStartAccelerateFun();
 
 public:
-	afx_msg void OnBnClickedOk();
+	afx_msg void OnHdnItemclickListProc(NMHDR *pNMHDR, LRESULT *pResult);
+
+public:
+	CEnumProc *m_enumProc;
+	CListCtrl m_procListCtrl;
+
+public:
+	void InitProcListCtrl();
+	void InsertProcListCtrl(list<ProcInfo> &procList);
+	afx_msg void OnBnClickedButtonRefresh();
 };
