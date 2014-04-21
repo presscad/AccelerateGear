@@ -64,8 +64,8 @@ BEGIN_MESSAGE_MAP(CInjectDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
-	ON_NOTIFY(HDN_ITEMCLICK, 0, &CInjectDlg::OnHdnItemclickListProc)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CInjectDlg::OnBnClickedButtonRefresh)
+	ON_BN_CLICKED(IDC_BUTTON_INJECT, &CInjectDlg::OnBnClickedButtonInject)
 END_MESSAGE_MAP()
 
 
@@ -180,12 +180,14 @@ BOOL CInjectDlg::LoadStartAccelerateFun()
 	return res;
 }
 
-void CInjectDlg::OnHdnItemclickListProc(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMHEADER phdr = reinterpret_cast<LPNMHEADER>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
-	*pResult = 0;
-}
+#define LIST_ID			0
+#define LIST_PID		1
+#define LIST_WND		2
+#define LIST_NAME		3
+#define LIST_IDSTR		"编号"
+#define LIST_PIDSTR		"PID"
+#define LIST_WNDSTR		"窗口"
+#define LIST_NAMESTR	"进程名称"
 
 void CInjectDlg::InitProcListCtrl()
 {
@@ -193,25 +195,27 @@ void CInjectDlg::InitProcListCtrl()
 	m_procListCtrl.SetExtendedStyle(exstyle | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	CRect rect;
 	m_procListCtrl.GetClientRect(&rect);
-	m_procListCtrl.InsertColumn(0, "编号", LVCFMT_LEFT, rect.Width() / 8);
-	m_procListCtrl.InsertColumn(1, "PID", LVCFMT_LEFT, rect.Width() / 4);
-	m_procListCtrl.InsertColumn(2, "进程名称", LVCFMT_LEFT, rect.Width() / 2);
+	m_procListCtrl.InsertColumn(LIST_ID, LIST_IDSTR, LVCFMT_LEFT, rect.Width() / 10);
+	m_procListCtrl.InsertColumn(LIST_PID, LIST_PIDSTR, LVCFMT_LEFT, rect.Width() * 2 / 10);
+	m_procListCtrl.InsertColumn(LIST_WND, LIST_WNDSTR, LVCFMT_LEFT, rect.Width() * 2 / 10);
+	m_procListCtrl.InsertColumn(LIST_NAME, LIST_NAMESTR, LVCFMT_LEFT, rect.Width() * 4 / 10);
 }
 
-void CInjectDlg::InsertProcListCtrl(list<ProcInfo> &procList)
+void CInjectDlg::InsertProcListCtrl(vector<ProcInfo> &procList)
 {
-	list<ProcInfo>::iterator ir;
+	vector<ProcInfo>::iterator ivec;
 	DWORD num = 0;
-	for (ir = procList.begin(); ir != procList.end(); ir++)
+	for (ivec = procList.begin(); ivec != procList.end(); ivec++)
 	{
 		CString numStr;
-		numStr.Format("%d", num);
 		CString procIDStr;
-		procIDStr.Format("%d", ir->procID);
+		numStr.Format("%d", num);
+		procIDStr.Format("%d", ivec->procID);
 		m_procListCtrl.InsertItem(num, "");
-		m_procListCtrl.SetItemText(num, 0, numStr);
-		m_procListCtrl.SetItemText(num, 1, procIDStr);
-		m_procListCtrl.SetItemText(num, 2, ir->procName);
+		m_procListCtrl.SetItemText(num, LIST_ID, numStr);
+		m_procListCtrl.SetItemText(num, LIST_PID, procIDStr);
+		m_procListCtrl.SetItemText(num, LIST_WND, ivec->wndName);
+		m_procListCtrl.SetItemText(num, LIST_NAME, ivec->procName);
 		num++;
 	}
 }
@@ -222,4 +226,18 @@ void CInjectDlg::OnBnClickedButtonRefresh()
 	m_procListCtrl.DeleteAllItems();
 	m_enumProc->RefreshProc();
 	InsertProcListCtrl(m_enumProc->m_procList);
+}
+
+void CInjectDlg::OnBnClickedButtonInject()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	POSITION pos = m_procListCtrl.GetFirstSelectedItemPosition();
+	if (pos)
+	{
+		DWORD selectItem = m_procListCtrl.GetNextSelectedItem(pos);
+	}
+	else
+	{
+		AfxMessageBox("请选择一个进程");
+	}
 }

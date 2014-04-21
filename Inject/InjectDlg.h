@@ -32,12 +32,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	typedef BOOL (__stdcall *StartAccelerateFun)(HWND hWnd, BOOL enable);
+	typedef BOOL (__stdcall *StartAccelerateFun)(DWORD threadID, BOOL enable);
 	StartAccelerateFun StartAccelerate;
 	BOOL LoadStartAccelerateFun();
 
 public:
-	afx_msg void OnHdnItemclickListProc(NMHDR *pNMHDR, LRESULT *pResult);
 
 public:
 	CEnumProc *m_enumProc;
@@ -45,6 +44,7 @@ public:
 
 public:
 	void InitProcListCtrl();
-	void InsertProcListCtrl(list<ProcInfo> &procList);
+	void InsertProcListCtrl(vector<ProcInfo> &procVector);
 	afx_msg void OnBnClickedButtonRefresh();
+	afx_msg void OnBnClickedButtonInject();
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <list>
+#include <vector>
 
 using namespace std;
 
@@ -9,15 +9,20 @@ struct ProcInfo
 {
 	DWORD procID;
 	CString procName;
+	HWND hWnd;
+	char wndName[255];
 };
 
 class CEnumProc
 {
 public:
-	list<ProcInfo> m_procList;
+	vector<ProcInfo> m_procList;
 
 public:
 	CEnumProc();
-	void EnumProc();
+	void EnumProcess();
+	static BOOL CALLBACK MyEnumWnd(HWND hWnd, LPARAM lParam);
+	HWND GetMainWnd(DWORD dwProcessId);
+	void EnumProcInfo();
 	void RefreshProc();
 };
